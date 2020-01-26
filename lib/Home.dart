@@ -28,8 +28,8 @@ class _HomeState extends State<Home> {
     Database bd = await _recuperarBancoDados();
 
     Map<String, dynamic> usuario = {
-      "nome": "Quim",
-      "idade":  26
+      "nome": "Teste 7",
+      "idade":  28
     };
 
     int idInsert = await bd.insert("TB_USUARIO", usuario);
@@ -40,16 +40,58 @@ class _HomeState extends State<Home> {
 
     Database bd = await _recuperarBancoDados();
 
-    List usuarios = await bd.rawQuery("SELECT DISTINCT NOME, IDADE FROM TB_USUARIO ORDER BY IDADE");
+    List usuarios = await bd.rawQuery("SELECT DISTINCT ID_USUARIO, NOME, IDADE FROM TB_USUARIO ORDER BY IDADE");
 
     print(usuarios);
   }
 
+  _buscarUsuario(int id) async{
+    Database bd = await _recuperarBancoDados();
 
+    List usuario = await bd.query(
+      "TB_USUARIO",
+      columns: ["ID_USUARIO", "NOME", "IDADE"],
+      where: "ID_USUARIO = ?",
+      whereArgs: [id]
+    );
+
+    print(usuario);
+  }
+
+  _removerUsuario(int id) async {
+    Database bd = await _recuperarBancoDados();
+
+    int usuariosRemovidos = await
+    bd.delete(
+      "TB_USUARIO",
+      where: "ID_USUARIO = ?",
+      whereArgs: [id]
+    );
+
+    print(usuariosRemovidos);
+
+  }
+
+  _atualizarUsuario(int id, Map<String, dynamic> usuario) async {
+    Database bd = await _recuperarBancoDados();
+
+    bd.update(
+      "TB_USUARIO",
+      usuario,
+      where: "ID_USUARIO = ?",
+      whereArgs: [id]);
+  }
 
 
   @override
   Widget build(BuildContext context) {
+
+    Map<String, dynamic> usuario = {
+      "NOME": "Quim Sharqlebolt",
+      "IDADE":  999,
+    };
+
+    _atualizarUsuario(12, usuario);
     _listarUsuario();
 
     return Scaffold(
