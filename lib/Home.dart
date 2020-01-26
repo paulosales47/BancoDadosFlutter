@@ -33,10 +33,16 @@ class _HomeState extends State<Home> {
     };
 
     int idInsert = await bd.insert("TB_USUARIO", usuario);
-
     print(idInsert);
+  }
 
+  _listarUsuario() async{
 
+    Database bd = await _recuperarBancoDados();
+
+    List usuarios = await bd.rawQuery("SELECT DISTINCT NOME, IDADE FROM TB_USUARIO ORDER BY IDADE");
+
+    print(usuarios);
   }
 
 
@@ -44,8 +50,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    _salvarUsuario();
-
+    _listarUsuario();
 
     return Scaffold(
       appBar: AppBar(
