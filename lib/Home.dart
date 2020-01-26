@@ -9,25 +9,44 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
-  _recuperarBancoDados() async{
+  Future<Database> _recuperarBancoDados() async{
     final caminhoBancoDados = await getDatabasesPath();
     final localBancoDados = join(caminhoBancoDados, "banco.db");
 
-    var retorno = await openDatabase(
+    var bd = await openDatabase(
       localBancoDados,
       version: 1,
       onCreate: (db, dbVersaoRecente){
         db.execute("CREATE TABLE TB_USUARIO(ID_USUARIO INTEGER PRIMARY KEY AUTOINCREMENT, NOME VARCHAR, IDADE INTEGER)");
     });
 
-    print(retorno.isOpen);
+    return bd;
+  }
+
+  _salvarUsuario() async{
+
+    Database bd = await _recuperarBancoDados();
+
+    Map<String, dynamic> usuario = {
+      "nome": "Quim",
+      "idade":  26
+    };
+
+    int idInsert = await bd.insert("TB_USUARIO", usuario);
+
+    print(idInsert);
+
 
   }
 
 
+
+
   @override
   Widget build(BuildContext context) {
-    _recuperarBancoDados();
+    _salvarUsuario();
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Banco de dados"),
